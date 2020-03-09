@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Plugins, CameraResultType, Capacitor, FilesystemDirectory,
   CameraPhoto, CameraSource } from '@capacitor/core';
+import {Photo} from '../photo';
 
 const { Camera, Filesystem, Storage } = Plugins;
 
@@ -9,6 +10,7 @@ const { Camera, Filesystem, Storage } = Plugins;
   providedIn: 'root'
 })
 export class PhotoService {
+  public photos: Photo[] = [];
 
   constructor() { }
   public async addNewToGallery() {
@@ -18,5 +20,10 @@ export class PhotoService {
       source: CameraSource.Camera,
       quality: 100
     });
+    this.photos.unshift({
+      filepath: "soon...",
+      webviewPath: capturedPhoto.webPath
+    });
   }
+
 }
