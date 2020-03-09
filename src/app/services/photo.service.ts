@@ -34,10 +34,9 @@ export class PhotoService {
       path: fileName,
       data: base64Data,
       directory: FilesystemDirectory.Data
-  });
-
+    });
   // Get platform-specific photo filepaths
-  return await this.getPhotoFile(cameraPhoto, fileName);
+    return await this.getPhotoFile(cameraPhoto, fileName);
   }
   private async readAsBase64(cameraPhoto: CameraPhoto) {
     // Fetch the photo, read as a blob, then convert to base64 format
@@ -53,7 +52,7 @@ export class PhotoService {
     };
     reader.readAsDataURL(blob);
   });
-  
+
   private async getPhotoFile(cameraPhoto: CameraPhoto, 
     fileName: string): Promise<Photo> {
     return {filepath: fileName,
