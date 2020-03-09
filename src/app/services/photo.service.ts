@@ -35,7 +35,7 @@ export class PhotoService {
       value: this.platform.is('hybrid')
         ? JSON.stringify(this.photos)
         : JSON.stringify(this.photos.map(p => {
-          // Don't save the base64 representation of the photo data, 
+          // Don't save the base64 representation of the photo data,
           // since it's already saved on the Filesystem
           const photoCopy = { ...p };
           delete photoCopy.base64;
@@ -70,6 +70,7 @@ export class PhotoService {
       // Fetch the photo, read as a blob, then convert to base64 format
       const response = await fetch(cameraPhoto.webPath);
       const blob = await response.blob();
+
       return await this.convertBlobToBase64(blob) as string;
     }
   }
@@ -81,7 +82,7 @@ export class PhotoService {
     };
     reader.readAsDataURL(blob);
   });
-
+  
   private async getPhotoFile(cameraPhoto, fileName) {
     if (this.platform.is('hybrid')) {
       // Get the new, complete filepath of the photo saved on filesystem
@@ -89,13 +90,15 @@ export class PhotoService {
         directory: FilesystemDirectory.Data,
         path: fileName
       });
+
       // Display the new image by rewriting the 'file://' path to HTTP
       // Details: https://ionicframework.com/docs/building/webview#file-protocol
       return {
         filepath: fileUri.uri,
         webviewPath: Capacitor.convertFileSrc(fileUri.uri),
       };
-    } else {
+    }
+    else {
       // Use webPath to display the new image instead of base64 since it's
       // already loaded into memory
       return {
@@ -108,6 +111,7 @@ export class PhotoService {
     // Retrieve cached photo array data
     const photos = await Storage.get({ key: this.PHOTO_STORAGE });
     this.photos = JSON.parse(photos.value) || [];
+
     // Easiest way to detect when running on the web:
     // “when the platform is NOT hybrid, do this”
     if (!this.platform.is('hybrid')) {
@@ -115,8 +119,8 @@ export class PhotoService {
       for (let photo of this.photos) {
         // Read each saved photo's data from the Filesystem
         const readFile = await Filesystem.readFile({
-          path: photo.filepath,
-          directory: FilesystemDirectory.Data
+            path: photo.filepath,
+            directory: FilesystemDirectory.Data
         });
 
         // Web platform only: Save the photo into the base64 field
