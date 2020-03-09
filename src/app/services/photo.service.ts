@@ -32,13 +32,15 @@ export class PhotoService {
     this.photos.unshift(savedImageFile);
     Storage.set({
       key: this.PHOTO_STORAGE,
-      value: JSON.stringify(this.photos.map(p => {
-        // Don't save the base64 representation of the photo data, 
-        // since it's already saved on the Filesystem
-        const photoCopy = { ...p };
-        delete photoCopy.base64;
-        return photoCopy;
-      }))
+      value: this.platform.is('hybrid')
+        ? JSON.stringify(this.photos)
+        : JSON.stringify(this.photos.map(p => {
+          // Don't save the base64 representation of the photo data, 
+          // since it's already saved on the Filesystem
+          const photoCopy = { ...p };
+          delete photoCopy.base64;
+          return photoCopy;
+        }))
     });
   }
   private async savePicture(cameraPhoto: CameraPhoto) {
@@ -57,7 +59,7 @@ export class PhotoService {
   }
   private async readAsBase64(cameraPhoto: CameraPhoto) {
     // "hybrid" will detect Cordova or Capacitor
-    if (this.platform.is('hybrid')){
+    if (this.platform.is('hybrid')) {
       // Read the file into base64 format
       const file = await Filesystem.readFile({
         path: cameraPhoto.path
@@ -113,8 +115,8 @@ export class PhotoService {
       for (let photo of this.photos) {
         // Read each saved photo's data from the Filesystem
         const readFile = await Filesystem.readFile({
-            path: photo.filepath,
-            directory: FilesystemDirectory.Data
+          path: photo.filepath,
+          directory: FilesystemDirectory.Data
         });
 
         // Web platform only: Save the photo into the base64 field
