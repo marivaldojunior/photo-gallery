@@ -14,6 +14,8 @@ export class PhotoService {
   private PHOTO_STORAGE: string = "photos";
 
   constructor() { }
+
+  
   public async addNewToGallery() {
     // Take a photo
     const capturedPhoto = await Camera.getPhoto({
