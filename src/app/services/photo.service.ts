@@ -11,6 +11,7 @@ const { Camera, Filesystem, Storage } = Plugins;
 })
 export class PhotoService {
   public photos: Photo[] = [];
+  private PHOTO_STORAGE: string = "photos";
 
   constructor() { }
   public async addNewToGallery() {
@@ -23,6 +24,16 @@ export class PhotoService {
     // Save the picture and add it to photo collection
     const savedImageFile = await this.savePicture(capturedPhoto);
     this.photos.unshift(savedImageFile);
+    Storage.set({
+      key: this.PHOTO_STORAGE,
+      value: JSON.stringify(this.photos.map(p => {
+              // Don't save the base64 representation of the photo data, 
+              // since it's already saved on the Filesystem
+              const photoCopy = { ...p };
+              delete photoCopy.base64;
+              return photoCopy;
+              }))
+    });
   }
   private async savePicture(cameraPhoto: CameraPhoto) {
     // Convert photo to base64 format, required by Filesystem API to save
